@@ -90,13 +90,13 @@ public class ConversorDeMonedasImpl implements IConversorDeMonedasService{
     @Override
     public Double Conversion(String tipoMoneda1, String tipoMoneda2, Double cantidad) {
 
-        String urlStr = "https://v6.exchangerate-api.com/v6/61ae0ed654f408b0e48c59bd/latest/" + tipoMoneda1;
+        String url = "https://v6.exchangerate-api.com/v6/61ae0ed654f408b0e48c59bd/latest/" + tipoMoneda1;
 
         try {
 
             HttpClient httpClient = HttpClient.newHttpClient();
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(urlStr))
+                    .uri(URI.create(url))
                     .build();
 
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
@@ -106,9 +106,9 @@ public class ConversorDeMonedasImpl implements IConversorDeMonedasService{
                 Gson gson = new Gson();
                 JsonObject jsonobj = gson.fromJson(responseBody, JsonObject.class);
 
-                double conversionRate = jsonobj.getAsJsonObject("conversion_rates").get(tipoMoneda2).getAsDouble();
+                double tasaDeConversion = jsonobj.getAsJsonObject("conversion_rates").get(tipoMoneda2).getAsDouble();
 
-                return cantidad * conversionRate;
+                return cantidad * tasaDeConversion;
             } else {
                 throw new IOException("Error: " + response.statusCode());
             }
